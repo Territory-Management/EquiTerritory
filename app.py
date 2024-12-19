@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import base64
-import chardet
 import logging
 from typing import List, Optional
 
@@ -10,14 +9,21 @@ from typing import List, Optional
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def load_data(file) -> Optional[pd.DataFrame]:
-    """Charge le fichier CSV en détectant l'encodage et gère les erreurs."""
+    """Charge le fichier CSV avec gestion des erreurs d'encodage."""
     try:
-        raw_data = file.read()
-        file.seek(0)
-        encoding = chardet.detect(raw_data)['encoding']
-        df = pd.read_csv(file, encoding=encoding, engine='python', sep=None)
-        logging.info("Fichier chargé avec succès.")
+        df = pd.read_csv(file, encoding='utf-8', engine='python', sep=None)
+        logging.info("Fichier chargé avec succès avec l'encodage utf-8.")
         return df
+    except UnicodeDecodeError:
+        try:
+            file.seek(0)
+            df = pd.read_csv(file, encoding='latin1', engine='python', sep=None)
+            logging.info("Fichier chargé avec succès avec l'encodage latin1.")
+            return df
+        except Exception as e:
+            logging.error(f"Erreur lors du chargement du fichier : {str(e)}")
+            st.error("Erreur lors du chargement du fichier. Veuillez vérifier le format.")
+            return None
     except Exception as e:
         logging.error(f"Erreur lors du chargement du fichier : {str(e)}")
         st.error("Erreur lors du chargement du fichier. Veuillez vérifier le format.")
