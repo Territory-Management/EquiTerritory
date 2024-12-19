@@ -7,7 +7,7 @@ import logging
 from typing import List, Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def load_data(file) -> Optional[pd.DataFrame]:
     """Charge le fichier CSV en détectant l'encodage et gère les erreurs."""
