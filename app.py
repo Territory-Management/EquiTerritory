@@ -88,7 +88,7 @@ def get_download_link(df: pd.DataFrame, filename: str) -> str:
     return f'<a href="data:file/csv;base64,{b64}" download="{filename}">Télécharger {filename}</a>'
 
 def main():
-    st.title('Fast Territory Balancer')
+    st.title('EquiTerritory')
 
     uploaded_file = st.file_uploader("Téléchargez un fichier CSV", type="csv")
     if uploaded_file:
